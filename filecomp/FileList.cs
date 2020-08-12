@@ -21,6 +21,7 @@ namespace filecomp
         //FolderBrowserDialogクラスのインスタンスを作成
         FolderBrowserDialog fbd = new FolderBrowserDialog();
         Encoding SJIS = Encoding.GetEncoding("Shift_JIS");
+        string WorkFolder = @"C:\FileList";
 
         public FileList()
         {
@@ -33,16 +34,19 @@ namespace filecomp
         /// </summary>
         private void Initial_processing()
         {
-            string WorkFolder = @"C:\FileList";
-            string excludeFile = @"exclude.txt";
-            Directory.CreateDirectory(WorkFolder);//作業用フォルダ作成
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), excludeFile);//除外設定ファイル
-            if (File.Exists(filePath))
-            {
-                File.Copy(filePath , Path.Combine(WorkFolder, excludeFile),true);
-
-            }
             
+            Directory.CreateDirectory(WorkFolder);//作業用フォルダ作成
+            fileCopy("exclude.txt");
+            fileCopy("SelectFile.txt");
+        }
+
+        private void fileCopy(string fname)
+        {
+            string fromfname = Path.Combine(Directory.GetCurrentDirectory(), fname);
+            if (File.Exists(fromfname))
+            {
+                File.Copy(fromfname, Path.Combine(WorkFolder, fname), true);
+            }
         }
 
         /// <summary>
@@ -114,7 +118,6 @@ namespace filecomp
                    ));
             }
             dataGridView1.DataSource = FileSetDatas;//List<>をDataGridViewにバインドする
-
         }
 
         /// <summary>
@@ -220,7 +223,7 @@ namespace filecomp
                     }
                 }
             }
-            FolderCopy(CopyFileList, @"C:\FileList\");
+            FolderCopy(CopyFileList, WorkFolder);
         }
 
        /// <summary>
