@@ -39,7 +39,7 @@ namespace filecomp
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), excludeFile);//除外設定ファイル
             if (File.Exists(filePath))
             {
-                File.Copy(filePath , Path.Combine(WorkFolder, excludeFile));
+                File.Copy(filePath , Path.Combine(WorkFolder, excludeFile),true);
 
             }
             
