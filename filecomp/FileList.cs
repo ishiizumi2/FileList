@@ -8,12 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
 
 namespace filecomp
 {
     public partial class FileList : Form
     {
-        List<string> FolderList1 = new List<string>();
+        List<string> FolderList = new List<string>();
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
         List<FileSetdata> CopyFileList = new List<FileSetdata>();//コピー対象ファイル
         List<string> quele1 = new List<string>();
@@ -53,7 +54,7 @@ namespace filecomp
 
         private void fileCopy(string fname)
         {
-            string fromfname = Path.Combine(Directory.GetCurrentDirectory(), fname);
+            string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行ファイルと同じフォルダ
             if (File.Exists(fromfname))
             {
                 File.Copy(fromfname, Path.Combine(WorkFolder, fname), true);
@@ -74,8 +75,8 @@ namespace filecomp
             {
                 await Task.Run(() =>
                 {
-                    FolderList1 = Directory.EnumerateFiles(@textBox1.Text, Filter.Text, SearchOption.AllDirectories).ToList(); // サブ・ディレクトも含める
-                    List_of_files();
+                    FolderList = Directory.EnumerateFiles(@textBox1.Text, Filter.Text, SearchOption.AllDirectories).ToList(); // サブ・ディレクトも含める
+                    ListOfFiles();
                 });
             }
         }
@@ -133,11 +134,11 @@ namespace filecomp
         /// <summary>
         /// ファイル一覧を取得
         /// </summary>
-        private void List_of_files()
+        private void ListOfFiles()
         {
-            get_ready_list(FolderList1);//不要なファイルを削除する
+            GetReadyList(FolderList);//不要なファイルを削除する
 
-            foreach (var sdata in FolderList1.Select(c => c.Substring(textBox1.Text.Length)))
+            foreach (var sdata in FolderList.Select(c => c.Substring(textBox1.Text.Length)))
             {
                 FileSetDatas.Add(new FileSetdata(
                    Path.GetFileName(sdata),
@@ -151,12 +152,12 @@ namespace filecomp
         /// Listから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
         /// </summary>
-        private void get_ready_list(List<String> FolderList)
+        private void GetReadyList(List<String> FolderList)
         {
             List<string> extension = new List<string>();//管理しない拡張子
             List<string> unnecessary = new List<string>();//管理しないファイル
 
-            string FileName = Path.Combine( Directory.GetCurrentDirectory() , @"exclude.txt");//除外設定ファイル
+            string FileName = Path.Combine( WorkFolder , "exclude.txt");//除外設定ファイル
             if (File.Exists(FileName))
             {
                 IEnumerable<string> lines = File.ReadLines(FileName, SJIS);
@@ -260,24 +261,26 @@ namespace filecomp
        /// <param name="dest_str"></param>コピー先フォルダ
         private void FolderCopy(List<FileSetdata>list, string dest_str)
         {
-            string folde1 = null;
+            string folder1 = null;
             // コピー先のフォルダ作成
             if (radioButton1.Checked)
             {
-                folde1 = @"\変更前\";
+                folder1 = @"\変更前\";
+                radioButton2.Checked = true;
             }
             else
             {
-                folde1 = @"\変更後\";
+                folder1 = @"\変更後\";
+                radioButton1.Checked = true;
             }
-            dest_str = dest_str + folde1;
+            dest_str = dest_str + folder1;
             Directory.CreateDirectory(dest_str);
             //コピー先のフォルダをカレントに指定する
-            Directory.SetCurrentDirectory(dest_str);
+            //Directory.SetCurrentDirectory(dest_str);
            
             foreach (var sdata in list)
             {
-                Directory.CreateDirectory(LastFoldeName + sdata.FolderName);
+                Directory.CreateDirectory(dest_str + LastFoldeName + sdata.FolderName);
                 string fromfname = textBox1.Text  + Path.Combine(sdata.FolderName, sdata.FileName);
                 string tofname =  dest_str +  LastFoldeName  + Path.Combine(dest_str, sdata.FolderName, sdata.FileName);
                 if (File.Exists(fromfname))
@@ -285,7 +288,7 @@ namespace filecomp
                     File.Copy(fromfname, tofname, true);
                 }
             }
-          
+           
         }
     }
 
