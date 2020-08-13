@@ -31,19 +31,16 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.Filter = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.button7 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +51,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 29);
             this.button2.TabIndex = 17;
-            this.button2.Text = "フォルダ1開く";
+            this.button2.Text = "フォルダを開く";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -72,42 +69,20 @@
             this.saveFileDialog1.DefaultExt = "CSV";
             this.saveFileDialog1.Filter = "CSVファイル(*.CSV)|*.CSV;|すべてのファイル(*.*)|*.*";
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(460, 15);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 21;
-            this.dataGridView1.Size = new System.Drawing.Size(683, 465);
-            this.dataGridView1.TabIndex = 30;
-            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1011, 518);
+            this.button1.Location = new System.Drawing.Point(13, 313);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(132, 60);
+            this.button1.Size = new System.Drawing.Size(184, 72);
             this.button1.TabIndex = 32;
             this.button1.Text = "終了";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(25, 200);
-            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(184, 72);
-            this.button3.TabIndex = 40;
-            this.button3.Text = "ファイル一覧";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // Filter
             // 
-            this.Filter.Location = new System.Drawing.Point(25, 119);
+            this.Filter.Location = new System.Drawing.Point(25, 132);
             this.Filter.Margin = new System.Windows.Forms.Padding(4);
             this.Filter.Name = "Filter";
             this.Filter.Size = new System.Drawing.Size(112, 22);
@@ -135,28 +110,18 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(257, 200);
+            this.button4.Location = new System.Drawing.Point(227, 313);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(163, 72);
+            this.button4.Size = new System.Drawing.Size(184, 72);
             this.button4.TabIndex = 44;
             this.button4.Text = "CSVファイル書き込み";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(25, 491);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(425, 49);
-            this.listBox1.TabIndex = 46;
-            // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(25, 354);
+            this.button7.Location = new System.Drawing.Point(227, 198);
             this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(184, 72);
@@ -169,11 +134,11 @@
             // 
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(25, 288);
+            this.groupBox1.Location = new System.Drawing.Point(25, 198);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(184, 60);
+            this.groupBox1.Size = new System.Drawing.Size(184, 65);
             this.groupBox1.TabIndex = 49;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "フォルダ選択";
@@ -202,27 +167,34 @@
             this.radioButton1.Text = "変更前";
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(22, 101);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 15);
+            this.label1.TabIndex = 50;
+            this.label1.Text = "フィルター";
+            // 
             // FileList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1275, 590);
+            this.ClientSize = new System.Drawing.Size(535, 590);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.Filter);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button2);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FileList";
             this.Text = "FileList";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -234,18 +206,16 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox Filter;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
