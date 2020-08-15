@@ -28,6 +28,16 @@ namespace filecomp
         public FileList()
         {
             InitializeComponent();
+            string folder1 = @Path.Combine(WorkFolder, "変更前");
+            if (Directory.Exists(folder1))
+            {
+                Directory.Delete(folder1, true);
+            }
+            folder1 = @Path.Combine(WorkFolder, "変更後");
+            if (Directory.Exists(folder1))
+            {
+                Directory.Delete(folder1, true);
+            }
             Initial_processing();
         }
 
