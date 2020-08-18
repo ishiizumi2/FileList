@@ -23,17 +23,19 @@ namespace filecomp
         FolderBrowserDialog fbd = new FolderBrowserDialog();
         Encoding SJIS = Encoding.GetEncoding("Shift_JIS");
         string WorkFolder = @"C:\FileList";
+        string BeforeFolder = @"\変更前\";
+        string AfterFolder = @"\変更後\";
         string LastFoldeName;
 
         public FileList()
         {
             InitializeComponent();
-            string folder1 = @Path.Combine(WorkFolder, "変更前");
+            string folder1 = @Path.Combine(WorkFolder, BeforeFolder);
             if (Directory.Exists(folder1))
             {
                 Directory.Delete(folder1, true);
             }
-            folder1 = @Path.Combine(WorkFolder, "変更後");
+            folder1 = @Path.Combine(WorkFolder, AfterFolder);
             if (Directory.Exists(folder1))
             {
                 Directory.Delete(folder1, true);
@@ -47,8 +49,8 @@ namespace filecomp
         private void Initial_processing()
         {
             Directory.CreateDirectory(WorkFolder);//作業用フォルダ作成
-            fileCopy("exclude.txt");
-            fileCopy("SelectFile.txt");
+            fileCopy(WorkFolder,"exclude.txt");
+            fileCopy(WorkFolder,"SelectFile.txt");
             DataClear();
         }
 
@@ -62,12 +64,17 @@ namespace filecomp
             LastFoldeName = null;
         }
 
-        private void fileCopy(string fname)
+        /// <summary>
+        /// ファイルコピー
+        /// </summary>
+        /// <param name="folder"></param>コピー先フォルダ名
+        /// <param name="fname"></param>コピー先ファイル名
+        private void fileCopy(string folder, string fname)
         {
             string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行ファイルと同じフォルダ
-            if (File.Exists(fromfname))
+            if(Directory.Exists(folder) & File.Exists(fromfname))
             {
-                File.Copy(fromfname, Path.Combine(WorkFolder, fname), true);
+                File.Copy(fromfname, Path.Combine(folder, fname), true);
             }
         }
 
@@ -119,7 +126,7 @@ namespace filecomp
         }
 
         /// <summary>
-        /// 古パスから最後のフォルダ名を取得
+        /// フルパスから最後のフォルダ名を取得
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -275,30 +282,27 @@ namespace filecomp
             // コピー先のフォルダ作成
             if (radioButton1.Checked)
             {
-                folder1 = @"\変更前\";
+                folder1 = BeforeFolder;
                 radioButton2.Checked = true;
             }
             else
             {
-                folder1 = @"\変更後\";
+                folder1 = AfterFolder;
                 radioButton1.Checked = true;
             }
             dest_str = dest_str + folder1;
             Directory.CreateDirectory(dest_str);
-            //コピー先のフォルダをカレントに指定する
-            //Directory.SetCurrentDirectory(dest_str);
            
             foreach (var sdata in list)
             {
-                Directory.CreateDirectory(dest_str + LastFoldeName + sdata.FolderName);
-                string fromfname = textBox1.Text  + Path.Combine(sdata.FolderName, sdata.FileName);
-                string tofname =  dest_str +  LastFoldeName  + Path.Combine(dest_str, sdata.FolderName, sdata.FileName);
+                Directory.CreateDirectory(dest_str + @"\" + LastFoldeName + sdata.FolderName);
+                string fromfname = textBox1.Text+ Path.Combine(sdata.FolderName, sdata.FileName);
+                string tofname = dest_str +   LastFoldeName + Path.Combine(sdata.FolderName, sdata.FileName);
                 if (File.Exists(fromfname))
                 {
                     File.Copy(fromfname, tofname, true);
                 }
             }
-           
         }
     }
 
