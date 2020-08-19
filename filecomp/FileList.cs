@@ -260,7 +260,8 @@ namespace filecomp
             {
                 foreach (var sdata in FileSetDatas)
                 {
-                    string filename = sdata.FolderName + @"\" + sdata.FileName;
+                    //string filename = sdata.FolderName + @"\" + sdata.FileName;
+                    string filename = Path.Combine(sdata.FolderName , sdata.FileName);
                     if (SelectData == filename.Substring(1))
                     {
                         CopyFileList.Add(sdata);
@@ -296,13 +297,18 @@ namespace filecomp
             foreach (var sdata in list)
             {
                 Directory.CreateDirectory(dest_str + @"\" + LastFoldeName + sdata.FolderName);
-                string fromfname = textBox1.Text+ Path.Combine(sdata.FolderName, sdata.FileName);
+                string fromfname = textBox1.Text + Path.Combine(sdata.FolderName, sdata.FileName);
                 string tofname = dest_str +   LastFoldeName + Path.Combine(sdata.FolderName, sdata.FileName);
                 if (File.Exists(fromfname))
                 {
                     File.Copy(fromfname, tofname, true);
                 }
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = FileSetDatas;
         }
     }
 
