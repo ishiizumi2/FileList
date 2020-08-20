@@ -30,16 +30,12 @@ namespace filecomp
         public FileList()
         {
             InitializeComponent();
-            string folder1 = @Path.Combine(WorkFolder, BeforeFolder);
-            if (Directory.Exists(folder1))
+            
+            if (Directory.Exists(WorkFolder))
             {
-                Directory.Delete(folder1, true);
+                Directory.Delete(WorkFolder, true);
             }
-            folder1 = @Path.Combine(WorkFolder, AfterFolder);
-            if (Directory.Exists(folder1))
-            {
-                Directory.Delete(folder1, true);
-            }
+         
             Initial_processing();
         }
 
@@ -78,16 +74,16 @@ namespace filecomp
             }
         }
 
-        /// <summary>
-        /// フォルダを指定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void button2_Click(object sender, EventArgs e)
+       /// <summary>
+       /// フォルダーを指定
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
+        private async void FoldeOpen_Click(object sender, EventArgs e)
         {
             fbd.SelectedPath = @"C:\";
             textBox1.Text = FolderSelect();
-            LastFoldeName =  GetLastFolderName(textBox1.Text);
+            LastFoldeName = GetLastFolderName(textBox1.Text);
             if (Directory.Exists(textBox1.Text))
             {
                 await Task.Run(() =>
@@ -242,36 +238,6 @@ namespace filecomp
             sw.Close();
         }
 
-        /// <summary>
-        /// 終了
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        
-        private void button7_Click(object sender, EventArgs e)
-        {
-            CopyFileList.Clear();
-            foreach (var SelectData in File.ReadLines(Path.Combine(WorkFolder, "SelectFile.txt"), SJIS))
-            {
-                foreach (var sdata in FileSetDatas)
-                {
-                    //string filename = sdata.FolderName + @"\" + sdata.FileName;
-                    string filename = Path.Combine(sdata.FolderName , sdata.FileName);
-                    if (SelectData == filename.Substring(1))
-                    {
-                        CopyFileList.Add(sdata);
-                    }
-                }
-            }
-            FolderCopy(CopyFileList, WorkFolder);
-            DataClear();
-        }
-
        /// <summary>
        /// フォルダ作成・ファイルコピー
        /// </summary>
@@ -309,6 +275,40 @@ namespace filecomp
         private void button3_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = FileSetDatas;
+        }
+
+        /// <summary>
+        /// 指定されたファイルをコピー
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FileCopyBtn_Click(object sender, EventArgs e)
+        {
+            CopyFileList.Clear();
+            foreach (var SelectData in File.ReadLines(Path.Combine(WorkFolder, "SelectFile.txt"), SJIS))
+            {
+                foreach (var sdata in FileSetDatas)
+                {
+                    //string filename = sdata.FolderName + @"\" + sdata.FileName;
+                    string filename = Path.Combine(sdata.FolderName, sdata.FileName);
+                    if (SelectData == filename.Substring(1))
+                    {
+                        CopyFileList.Add(sdata);
+                    }
+                }
+            }
+            FolderCopy(CopyFileList, WorkFolder);
+            DataClear();
+        }
+
+        /// <summary>
+        /// 終了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Close_Btn_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 
