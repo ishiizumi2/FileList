@@ -222,20 +222,18 @@ namespace filecomp
             {
                 return;
             }
-            // CSVファイルオープン
-            StreamWriter sw =
-                new StreamWriter(strFileName, false, SJIS);
-
-            foreach (var (item, index) in FileSetDatas.Select((item, index) => (item, index)))
+         
+            using (StreamWriter sw = new StreamWriter(strFileName, false, SJIS))
             {
-                string str = "";
-                string no = (index + 1).ToString();
-                string name =  LastFoldeName + item.FolderName + item.FileName;
-                str = no + "," + name;
-                sw.WriteLine(str);
+                foreach (var (item, index) in FileSetDatas.Select((item, index) => (item, index)))
+                {
+                    string str = "";
+                    string no = (index + 1).ToString();
+                    string name = LastFoldeName + item.FolderName + item.FileName;
+                    str = no + "," + name;
+                    sw.WriteLine(str);
+                }
             }
-            // CSVファイルクローズ
-            sw.Close();
         }
 
        /// <summary>
