@@ -16,7 +16,6 @@ namespace filecomp
     {
         List<string> FolderList = new List<string>();
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
-        List<FileSetdata> CopyFileList = new List<FileSetdata>();//コピー対象ファイル
         List<string> quele1 = new List<string>();
  
         //FolderBrowserDialogクラスのインスタンスを作成
@@ -31,7 +30,7 @@ namespace filecomp
         {
             InitializeComponent();
             
-            if (Directory.Exists(WorkFolder))
+            if (Directory.Exists(WorkFolder))//前回分のフォルダーが存在したら削除する
             {
                 Directory.Delete(WorkFolder, true);
             }
@@ -100,7 +99,7 @@ namespace filecomp
         /// <returns>フォルダ名</returns>
         private string FolderSelect()
         {
-            string folderName = "";
+            string folderName = null;
             //上部に表示する説明テキストを指定する
             fbd.Description = "フォルダを指定してください。";
             //ルートフォルダを指定する
@@ -135,7 +134,7 @@ namespace filecomp
                 if (folders.Length > 0)
                     lastFolder = folders[folders.Length - 1];
                 else
-                    lastFolder = "";
+                    lastFolder = null;
             }
             catch (Exception)
             {
@@ -165,8 +164,12 @@ namespace filecomp
         /// Listから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
         /// </summary>
-        private void GetReadyList(List<String> FolderList)
+        private void GetReadyList(List<String> folderList)
         {
+            if (!(folderList?.Count > 0))
+            {
+                return; //空なら抜ける
+            }
             List<string> extension = new List<string>();//管理しない拡張子
             List<string> unnecessary = new List<string>();//管理しないファイル
 
@@ -191,14 +194,14 @@ namespace filecomp
 
             foreach (var sdat in extension) //指定された拡張子のファイルを削除する
             {
-                FolderList.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
+                folderList.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
             }
 
             foreach (var sdat in unnecessary) //管理しないファイルを削除する
             {
-                FolderList.RemoveAll(c => Path.GetFileName(c).ToLower() == sdat.ToLower());
+                folderList.RemoveAll(c => Path.GetFileName(c).ToLower() == sdat.ToLower());
             }
-            FolderList.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);
+            folderList.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         /// <summary>
@@ -227,7 +230,7 @@ namespace filecomp
             {
                 foreach (var (item, index) in FileSetDatas.Select((item, index) => (item, index)))
                 {
-                    string str = "";
+                    string str = null;
                     string no = (index + 1).ToString();
                     string name = LastFoldeName + item.FolderName + item.FileName;
                     str = no + "," + name;
@@ -282,17 +285,18 @@ namespace filecomp
         /// <param name="e"></param>
         private void FileCopyBtn_Click(object sender, EventArgs e)
         {
-            CopyFileList.Clear();
+            var CopyFileList = new List<FileSetdata>();//コピー対象ファイル
+
+            if (!File.Exists(Path.Combine(WorkFolder, "SelectFile.txt")) || (String.IsNullOrWhiteSpace(textBox1.Text)))
+            {
+                return;
+            }
+
             foreach (var SelectData in File.ReadLines(Path.Combine(WorkFolder, "SelectFile.txt"), SJIS))
             {
-                foreach (var sdata in FileSetDatas)
+                foreach (var sdata in FileSetDatas.Where(c => Path.Combine(c.FolderName, c.FileName).Substring(1) == SelectData))
                 {
-                    //string filename = sdata.FolderName + @"\" + sdata.FileName;
-                    string filename = Path.Combine(sdata.FolderName, sdata.FileName);
-                    if (SelectData == filename.Substring(1))
-                    {
-                        CopyFileList.Add(sdata);
-                    }
+                    CopyFileList.Add(sdata);
                 }
             }
             FolderCopy(CopyFileList, WorkFolder);
