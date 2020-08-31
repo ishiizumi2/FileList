@@ -18,6 +18,7 @@ namespace filecomp
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
         List<string> quele1 = new List<string>();
  
+
         //FolderBrowserDialogクラスのインスタンスを作成
         FolderBrowserDialog fbd = new FolderBrowserDialog();
         Encoding SJIS = Encoding.GetEncoding("Shift_JIS");
