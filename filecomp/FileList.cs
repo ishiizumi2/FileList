@@ -18,7 +18,7 @@ namespace filecomp
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
         List<string> quele1 = new List<string>();
  
-        //git-test
+        //git-test hp
 
 
         //FolderBrowserDialogクラスのインスタンスを作成
