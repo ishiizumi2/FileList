@@ -31,12 +31,7 @@ namespace filecomp
 
         public FileList()
         {
-            InitializeComponent();
-            
-            if (Directory.Exists(WorkFolder))//前回分のフォルダーが存在したら削除する
-            {
-                Directory.Delete(WorkFolder, true);
-            }
+            InitializeComponent();       
          
             Initial_processing();
         }
@@ -46,6 +41,10 @@ namespace filecomp
         /// </summary>
         private void Initial_processing()
         {
+            if (Directory.Exists(WorkFolder))//前回分のフォルダーが存在したら削除する
+            {
+                Directory.Delete(WorkFolder, true);
+            }
             Directory.CreateDirectory(WorkFolder);//作業用フォルダ作成
             fileCopy(WorkFolder,"exclude.txt");
             fileCopy(WorkFolder,"SelectFile.txt");
