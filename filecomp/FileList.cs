@@ -16,7 +16,6 @@ namespace filecomp
     {
         List<string> FolderList = new List<string>();
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
-        List<string> quele1 = new List<string>();
 
         //FolderBrowserDialogクラスのインスタンスを作成
         FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -147,7 +146,7 @@ namespace filecomp
         /// </summary>
         private void ListOfFiles()
         {
-            GetReadyList(FolderList);//不要なファイルを削除する
+            GetReadyList(FolderList);//比較対象外のファイルを削除する
 
             foreach (var sdata in FolderList.Select(c => c.Substring(textBox1.Text.Length)))
             {
@@ -160,7 +159,7 @@ namespace filecomp
         }
 
         /// <summary>
-        /// Listから比較対象外のファイルを削除する
+        /// 引数のListから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
         /// </summary>
         private void GetReadyList(List<String> folderList)
