@@ -17,9 +17,6 @@ namespace filecomp
         List<string> FolderList = new List<string>();
         List<FileSetdata> FileSetDatas = new List<FileSetdata>();
         List<string> quele1 = new List<string>();
- 
-        //git-test 会社PC
-
 
         //FolderBrowserDialogクラスのインスタンスを作成
         FolderBrowserDialog fbd = new FolderBrowserDialog();
