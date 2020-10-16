@@ -203,63 +203,28 @@ namespace filecomp
         }
 
         /// <summary>
-        /// CSVファイル書き込み
+        /// コピー先のフォルダ作成・ファイルコピー
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button4_Click(object sender, EventArgs e)
+        /// <param name="CopyFileList"></param>コピー元List
+        /// <param name="dest_str"></param>コピー先フォルダ
+        private void FolderCopy(List<FileSetdata> CopyFileList, string dest_str)
         {
-            if (!(FileSetDatas?.Count > 0))
-            {
-                return; //空なら抜ける
-            }
-
-            string strFileName;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                strFileName = saveFileDialog1.FileName;
-            }
-            else
-            {
-                return;
-            }
-         
-            using (StreamWriter sw = new StreamWriter(strFileName, false, SJIS))
-            {
-                foreach (var (item, index) in FileSetDatas.Select((item, index) => (item, index)))
-                {
-                    string str = null;
-                    string no = (index + 1).ToString();
-                    string name = LastFoldeName + item.FolderName + item.FileName;
-                    str = no + "," + name;
-                    sw.WriteLine(str);
-                }
-            }
-        }
-
-       /// <summary>
-       /// フォルダ作成・ファイルコピー
-       /// </summary>
-       /// <param name="list"></param>コピー元List
-       /// <param name="dest_str"></param>コピー先フォルダ
-        private void FolderCopy(List<FileSetdata>list, string dest_str)
-        {
-            string folder1 = null;
+            string folderName = null;
             // コピー先のフォルダ作成
             if (radioButton1.Checked)
             {
-                folder1 = BeforeFolder;
+                folderName = BeforeFolder;
                 radioButton2.Checked = true;
             }
             else
             {
-                folder1 = AfterFolder;
+                folderName = AfterFolder;
                 radioButton1.Checked = true;
             }
-            dest_str = dest_str + folder1;
+            dest_str = dest_str + folderName;
             Directory.CreateDirectory(dest_str);
            
-            foreach (var sdata in list)
+            foreach (var sdata in CopyFileList)
             {
                 Directory.CreateDirectory(dest_str + @"\" + LastFoldeName + sdata.FolderName);
                 string fromfname = textBox1.Text + Path.Combine(sdata.FolderName, sdata.FileName);
@@ -271,13 +236,14 @@ namespace filecomp
             }
         }
 
+        //チッェク用
         private void button3_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = FileSetDatas;
         }
 
         /// <summary>
-        /// 指定されたファイルをコピー
+        /// SelectFile.txtで指定されたファイルをコピー
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
