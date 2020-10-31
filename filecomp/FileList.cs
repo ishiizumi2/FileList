@@ -9,27 +9,52 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using FileListLibrary;
+
+using System.Xml.Linq;
 
 namespace filecomp
 {
     public partial class FileList : Form
     {
-        List<string> FolderList = new List<string>();
-        List<FileSetdata> FileSetDatas = new List<FileSetdata>();
+        FileListLibrary.FileListClass filelistclass = new FileListLibrary.FileListClass();
 
         //FolderBrowserDialogクラスのインスタンスを作成
         FolderBrowserDialog fbd = new FolderBrowserDialog();
         Encoding SJIS = Encoding.GetEncoding("Shift_JIS");
-        string WorkFolder = @"C:\FileList";
-        string BeforeFolder = @"\変更前\";
-        string AfterFolder = @"\変更後\";
-        string LastFoldeName;
+        string WorkFolder;
+        string Excludefilename;
+        string Selectfilename;
+        string BeforeFolder;
+        string AfterFolder;
+        string StartSelectFolder;
+        string SetFolderName;
 
         public FileList()
         {
-            InitializeComponent();       
-         
+            InitializeComponent();
             Initial_processing();
+        }
+
+        /// <summary>
+        /// XMLFile(setlist.xml)の読み込み・設定
+        /// </summary>
+        private void XMLread()
+        {
+            string fileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "setlist.xml");//実行ファイルと同じフォルダ
+            if (File.Exists(fileName))
+            {
+                //xmlファイルを指定する
+                XElement xml = XElement.Load(fileName);
+                //メンバー情報のタグ内の情報を取得する
+                IEnumerable<XElement> infos = from item in xml.Elements("設定内容") select item;
+                WorkFolder        = infos.Select(c => c.Element("WorkFolder").Value).FirstOrDefault()        ?? @"C:\FileList";
+                Excludefilename   = infos.Select(c => c.Element("Excludefilename").Value).FirstOrDefault()   ?? "exclude.txt";
+                Selectfilename    = infos.Select(c => c.Element("Selectfilename").Value).FirstOrDefault()    ?? "SelectFile.txt";
+                BeforeFolder      = infos.Select(c => c.Element("BeforeFolder").Value).FirstOrDefault()      ?? @"\変更前\";
+                AfterFolder       = infos.Select(c => c.Element("AfterFolder").Value).FirstOrDefault()       ?? @"\変更後\";
+                StartSelectFolder = infos.Select(c => c.Element("StartSelectFolder").Value).FirstOrDefault() ?? @"C:\";
+            }
         }
 
         /// <summary>
@@ -37,13 +62,23 @@ namespace filecomp
         /// </summary>
         private void Initial_processing()
         {
+            XMLread();
+
             if (Directory.Exists(WorkFolder))//前回分のフォルダーが存在したら削除する
             {
                 Directory.Delete(WorkFolder, true);
             }
             Directory.CreateDirectory(WorkFolder);//作業用フォルダ作成
-            fileCopy(WorkFolder,"exclude.txt");
-            fileCopy(WorkFolder,"SelectFile.txt");
+
+            //プロパテイに固定値代入
+            filelistclass.workfolder = WorkFolder;
+            filelistclass.excludefilename = Excludefilename;
+            filelistclass.selectfilename = Selectfilename;
+            filelistclass.beforeFolder = BeforeFolder;
+            filelistclass.afterFolder = AfterFolder;
+
+            filelistclass.fileCopy(WorkFolder, Excludefilename);
+            filelistclass.fileCopy(WorkFolder, Selectfilename);
             DataClear();
         }
 
@@ -53,42 +88,44 @@ namespace filecomp
         private void DataClear()
         {
             textBox1.Text = null;
-            FileSetDatas.Clear();
-            LastFoldeName = null;
+            SetFolderName = null;
+            dataGridView1.DataSource = null;
+            dataGridView1.Rows.Clear();
         }
 
         /// <summary>
-        /// ファイルコピー
+        /// フォルダーを指定
         /// </summary>
-        /// <param name="folder"></param>コピー先フォルダ名
-        /// <param name="fname"></param>コピー先ファイル名
-        private void fileCopy(string folder, string fname)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private  void FoldeOpen_Click(object sender, EventArgs e)
         {
-            string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行ファイルと同じフォルダ
-            if(Directory.Exists(folder) & File.Exists(fromfname))
-            {
-                File.Copy(fromfname, Path.Combine(folder, fname), true);
-            }
-        }
-
-       /// <summary>
-       /// フォルダーを指定
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
-        private async void FoldeOpen_Click(object sender, EventArgs e)
-        {
-            fbd.SelectedPath = @"C:\";
+            DataClear();
+            fbd.SelectedPath = StartSelectFolder;
             textBox1.Text = FolderSelect();
-            LastFoldeName = GetLastFolderName(textBox1.Text);
-            if (Directory.Exists(textBox1.Text))
+            SetFolderName = textBox1.Text;
+            filelistclass.setfoldername = SetFolderName;
+            if ((!String.IsNullOrEmpty(SetFolderName)) && (Directory.Exists(SetFolderName)))
             {
-                await Task.Run(() =>
-                {
-                    FolderList = Directory.EnumerateFiles(@textBox1.Text, Filter.Text, SearchOption.AllDirectories).ToList(); // サブ・ディレクトも含める
-                    ListOfFiles();
-                });
+               filelistclass.FolderCopy(
+                   filelistclass.CopyFileListCreate(
+                   filelistclass.ListOfFiles(), radioButton1.Checked), 
+                   WorkFolder, radioButton1.Checked);
             }
+            
+
+            // 作業前/作業後切り替え
+            if (radioButton1.Checked)
+
+            {
+                radioButton2.Checked = true;
+            }
+            else
+            {
+                radioButton1.Checked = true;
+            }
+
+            MessageBox.Show("コピー完了");
         }
 
         /// <summary>
@@ -97,7 +134,7 @@ namespace filecomp
         /// <returns>フォルダ名</returns>
         private string FolderSelect()
         {
-            string folderName = null;
+            string SelectFolderName = null;
             //上部に表示する説明テキストを指定する
             fbd.Description = "フォルダを指定してください。";
             //ルートフォルダを指定する
@@ -113,158 +150,9 @@ namespace filecomp
             if (fbd.ShowDialog(this) == DialogResult.OK)
             {
                 //選択されたフォルダを表示する
-                folderName = fbd.SelectedPath;
+                SelectFolderName = fbd.SelectedPath;
             }
-            return folderName;
-        }
-
-        /// <summary>
-        /// フルパスから最後のフォルダ名を取得
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private string GetLastFolderName(string path)
-        {
-            string lastFolder = null;
-            try
-            {
-                string[] folders = path.Split('\\');
-                if (folders.Length > 0)
-                    lastFolder = folders[folders.Length - 1];
-                else
-                    lastFolder = null;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return lastFolder;
-        }
-
-        /// <summary>
-        /// ファイル一覧を取得
-        /// </summary>
-        private void ListOfFiles()
-        {
-            GetReadyList(FolderList);//比較対象外のファイルを削除する
-
-            foreach (var sdata in FolderList.Select(c => c.Substring(textBox1.Text.Length)))
-            {
-                FileSetDatas.Add(new FileSetdata(
-                   Path.GetFileName(sdata),
-                   Path.GetDirectoryName(sdata),
-                   Path.GetExtension(sdata)
-                   ));
-            }
-        }
-
-        /// <summary>
-        /// 引数のListから比較対象外のファイルを削除する
-        /// 設定ファイル exclude.txt
-        /// </summary>
-        private void GetReadyList(List<String> folderList)
-        {
-            if (!(folderList?.Count > 0))
-            {
-                return; //空なら抜ける
-            }
-            List<string> extension = new List<string>();//管理しない拡張子
-            List<string> unnecessary = new List<string>();//管理しないファイル
-
-            string FileName = Path.Combine( WorkFolder , "exclude.txt");//除外設定ファイル
-            if (File.Exists(FileName))
-            {
-                IEnumerable<string> lines = File.ReadLines(FileName, SJIS);
-                foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "*."))
-                {
-                    extension.Add(line);
-                }
-
-                foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "$$"))
-                {
-                    unnecessary.Add(line.Substring(2));
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            foreach (var sdat in extension) //指定された拡張子のファイルを削除する
-            {
-                folderList.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
-            }
-
-            foreach (var sdat in unnecessary) //管理しないファイルを削除する
-            {
-                folderList.RemoveAll(c => Path.GetFileName(c).ToLower() == sdat.ToLower());
-            }
-            folderList.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);
-        }
-
-        /// <summary>
-        /// コピー先のフォルダ作成・ファイルコピー
-        /// </summary>
-        /// <param name="CopyFileList"></param>コピー元List
-        /// <param name="dest_str"></param>コピー先フォルダ
-        private void FolderCopy(List<FileSetdata> CopyFileList, string dest_str)
-        {
-            string folderName = null;
-            // コピー先のフォルダ作成
-            if (radioButton1.Checked)
-            {
-                folderName = BeforeFolder;
-                radioButton2.Checked = true;
-            }
-            else
-            {
-                folderName = AfterFolder;
-                radioButton1.Checked = true;
-            }
-            dest_str = dest_str + folderName;
-            Directory.CreateDirectory(dest_str);
-           
-            foreach (var sdata in CopyFileList)
-            {
-                Directory.CreateDirectory(dest_str + @"\" + LastFoldeName + sdata.FolderName);
-                string fromfname = textBox1.Text + Path.Combine(sdata.FolderName, sdata.FileName);
-                string tofname = dest_str +   LastFoldeName + Path.Combine(sdata.FolderName, sdata.FileName);
-                if (File.Exists(fromfname))
-                {
-                    File.Copy(fromfname, tofname, true);
-                }
-            }
-        }
-
-        //チッェク用
-        private void button3_Click(object sender, EventArgs e)
-        {
-            dataGridView1.DataSource = FileSetDatas;
-        }
-
-        /// <summary>
-        /// SelectFile.txtで指定されたファイルをコピー
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FileCopyBtn_Click(object sender, EventArgs e)
-        {
-            var CopyFileList = new List<FileSetdata>();//コピー対象ファイル
-
-            if (!File.Exists(Path.Combine(WorkFolder, "SelectFile.txt")) || (String.IsNullOrWhiteSpace(textBox1.Text)))
-            {
-                return;
-            }
-
-            foreach (var SelectData in File.ReadLines(Path.Combine(WorkFolder, "SelectFile.txt"), SJIS))
-            {
-                foreach (var sdata in FileSetDatas.Where(c => Path.Combine(c.FolderName, c.FileName).Substring(1) == SelectData))
-                {
-                    CopyFileList.Add(sdata);
-                }
-            }
-            FolderCopy(CopyFileList, WorkFolder);
-            DataClear();
+            return SelectFolderName;
         }
 
         /// <summary>
@@ -275,21 +163,6 @@ namespace filecomp
         private void Close_Btn_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-    }
-
-    class FileSetdata
-    {
-        public string FileName { get; private set; }
-        public string FolderName { get; private set; }
-        public string Extension { get; private set; }
-
-        public FileSetdata() { }
-        public FileSetdata(string filename, string foldername, string extension)
-        {
-            FileName = filename;
-            FolderName = foldername;
-            Extension = extension;
         }
     }
 }
