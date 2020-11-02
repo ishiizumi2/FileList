@@ -102,8 +102,8 @@ namespace filecomp
         {
             DataClear();
             fbd.SelectedPath = StartSelectFolder;
-            textBox1.Text = FolderSelect();
-            SetFolderName = textBox1.Text;
+            SetFolderName = FolderSelect();
+            textBox1.Text  = SetFolderName; // 表示用
             filelistclass.setfoldername = SetFolderName;
             if ((!String.IsNullOrEmpty(SetFolderName)) && (Directory.Exists(SetFolderName)))
             {
