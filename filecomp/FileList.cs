@@ -109,7 +109,7 @@ namespace filecomp
             {
                filelistclass.FolderCopy(
                    filelistclass.CopyFileListCreate(
-                   filelistclass.ListOfFiles(), radioButton1.Checked), 
+                       filelistclass.ListOfFiles()), 
                    WorkFolder, radioButton1.Checked);
             }
             
