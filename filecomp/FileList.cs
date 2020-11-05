@@ -108,8 +108,7 @@ namespace filecomp
             if ((!String.IsNullOrEmpty(SetFolderName)) && (Directory.Exists(SetFolderName)))
             {
                filelistclass.FolderCopy(
-                   filelistclass.CopyFileListCreate(
-                       filelistclass.ListOfFiles()), 
+                   filelistclass.CopyFileListCreate(WorkFolder, filelistclass.ListOfFiles()), 
                    WorkFolder, radioButton1.Checked);
             }
             
