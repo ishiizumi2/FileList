@@ -42,12 +42,13 @@
             // 
             // FoldeOpen
             // 
+            this.FoldeOpen.BackColor = System.Drawing.Color.Aqua;
             this.FoldeOpen.Location = new System.Drawing.Point(19, 37);
             this.FoldeOpen.Name = "FoldeOpen";
-            this.FoldeOpen.Size = new System.Drawing.Size(107, 35);
+            this.FoldeOpen.Size = new System.Drawing.Size(107, 52);
             this.FoldeOpen.TabIndex = 17;
             this.FoldeOpen.Text = "フォルダを開く";
-            this.FoldeOpen.UseVisualStyleBackColor = true;
+            this.FoldeOpen.UseVisualStyleBackColor = false;
             this.FoldeOpen.Click += new System.EventHandler(this.FoldeOpen_Click);
             // 
             // textBox1
@@ -64,12 +65,13 @@
             // 
             // Close_Btn
             // 
+            this.Close_Btn.BackColor = System.Drawing.Color.Yellow;
             this.Close_Btn.Location = new System.Drawing.Point(19, 343);
             this.Close_Btn.Name = "Close_Btn";
-            this.Close_Btn.Size = new System.Drawing.Size(138, 58);
+            this.Close_Btn.Size = new System.Drawing.Size(107, 58);
             this.Close_Btn.TabIndex = 32;
             this.Close_Btn.Text = "終了";
-            this.Close_Btn.UseVisualStyleBackColor = true;
+            this.Close_Btn.UseVisualStyleBackColor = false;
             this.Close_Btn.Click += new System.EventHandler(this.Close_Btn_Click);
             // 
             // groupBox1
