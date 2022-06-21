@@ -33,8 +33,8 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.Close_Btn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.AfterButton = new System.Windows.Forms.RadioButton();
+            this.BeforeButton = new System.Windows.Forms.RadioButton();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -76,8 +76,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Controls.Add(this.AfterButton);
+            this.groupBox1.Controls.Add(this.BeforeButton);
             this.groupBox1.Location = new System.Drawing.Point(194, 37);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
@@ -87,29 +87,29 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "フォルダ選択";
             // 
-            // radioButton2
+            // AfterButton
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(13, 33);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(2);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(59, 16);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "変更後";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.AfterButton.AutoSize = true;
+            this.AfterButton.Location = new System.Drawing.Point(13, 33);
+            this.AfterButton.Margin = new System.Windows.Forms.Padding(2);
+            this.AfterButton.Name = "AfterButton";
+            this.AfterButton.Size = new System.Drawing.Size(49, 16);
+            this.AfterButton.TabIndex = 1;
+            this.AfterButton.Text = "After";
+            this.AfterButton.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // BeforeButton
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(13, 13);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(2);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(59, 16);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "変更前";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.BeforeButton.AutoSize = true;
+            this.BeforeButton.Checked = true;
+            this.BeforeButton.Location = new System.Drawing.Point(13, 13);
+            this.BeforeButton.Margin = new System.Windows.Forms.Padding(2);
+            this.BeforeButton.Name = "BeforeButton";
+            this.BeforeButton.Size = new System.Drawing.Size(57, 16);
+            this.BeforeButton.TabIndex = 0;
+            this.BeforeButton.TabStop = true;
+            this.BeforeButton.Text = "Before";
+            this.BeforeButton.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
@@ -148,8 +148,8 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button Close_Btn;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton AfterButton;
+        private System.Windows.Forms.RadioButton BeforeButton;
         private System.Windows.Forms.DataGridView dataGridView1;
     }
 }

@@ -51,8 +51,8 @@ namespace filecomp
                 WorkFolder        = infos.Select(c => c.Element("WorkFolder").Value).FirstOrDefault()        ?? @"C:\FileList";
                 Excludefilename   = infos.Select(c => c.Element("Excludefilename").Value).FirstOrDefault()   ?? "exclude.txt";
                 Selectfilename    = infos.Select(c => c.Element("Selectfilename").Value).FirstOrDefault()    ?? "SelectFile.txt";
-                BeforeFolder      = infos.Select(c => c.Element("BeforeFolder").Value).FirstOrDefault()      ?? @"\変更前\";
-                AfterFolder       = infos.Select(c => c.Element("AfterFolder").Value).FirstOrDefault()       ?? @"\変更後\";
+                BeforeFolder      = infos.Select(c => c.Element("BeforeFolder").Value).FirstOrDefault()      ?? @"\Before\";
+                AfterFolder       = infos.Select(c => c.Element("AfterFolder").Value).FirstOrDefault()       ?? @"\After\";
                 StartSelectFolder = infos.Select(c => c.Element("StartSelectFolder").Value).FirstOrDefault() ?? @"C:\";
             }
         }
@@ -109,19 +109,18 @@ namespace filecomp
             {
                filelistclass.FolderCopy(
                    filelistclass.CopyFileListCreate(WorkFolder, filelistclass.ListOfFiles()), 
-                   WorkFolder, radioButton1.Checked);
+                   WorkFolder, BeforeButton.Checked);
             }
             
-
-            // 作業前/作業後切り替え
-            if (radioButton1.Checked)
+            // Before/After切り替え
+            if (BeforeButton.Checked)
 
             {
-                radioButton2.Checked = true;
+                AfterButton.Checked = true;
             }
             else
             {
-                radioButton1.Checked = true;
+                BeforeButton.Checked = true;
             }
 
             MessageBox.Show("コピー完了");
@@ -141,7 +140,11 @@ namespace filecomp
             fbd.RootFolder = Environment.SpecialFolder.Desktop;
             //最初に選択するフォルダを指定する
             //RootFolder以下にあるフォルダである必要がある
-            //fbd.SelectedPath = @"C:\Windows";
+            string filePath = BeforeButton.Checked ? @"C:\OLD" : @"C:\NEW";
+            if (Directory.Exists(filePath))
+            {
+                fbd.SelectedPath = filePath;
+            }
             //ユーザーが新しいフォルダを作成できるようにする
             //デフォルトでTrue
             fbd.ShowNewFolderButton = false;
