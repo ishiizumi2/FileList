@@ -114,7 +114,6 @@ namespace filecomp
             
             // Before/After切り替え
             if (BeforeButton.Checked)
-
             {
                 AfterButton.Checked = true;
             }
